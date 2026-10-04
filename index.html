@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="th"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DigiNex AI – Dashboard เล่าเรื่อง</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#123B6D;--bg:#0A1E3F;--blue:#1B77FF;--cyan:#28D3EC;--sky:#5BC0EB;--mint:#66EBB7;--ink:#EAF2FF;--mut:#9DB4D6;--line:#244A80;--warn:#FFB454}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Prompt',system-ui,sans-serif;line-height:1.6}
+header{padding:56px 6vw 40px;border-bottom:1px solid var(--line);background:linear-gradient(135deg,#0A1E3F,#123B6D)}
+header h1{font-size:clamp(28px,5vw,52px);margin:0 0 8px;font-weight:700}
+header p{margin:0;color:var(--mut);max-width:62ch}
+.kpis{display:flex;flex-wrap:wrap;gap:14px;margin-top:28px}
+.kpi{background:rgba(255,255,255,.06);border-left:4px solid var(--cyan);padding:10px 18px;min-width:150px}
+.kpi b{display:block;font-size:28px}.kpi span{font-size:13px;color:var(--mut)}
+section{padding:44px 6vw;border-bottom:1px solid var(--line);display:grid;grid-template-columns:minmax(240px,1fr) 2fr;gap:32px}
+section h2{margin:0 0 10px;font-size:24px;color:var(--cyan)}
+section .story p{margin:0 0 10px;color:var(--ink)}
+section .story small{color:var(--mut)}
+.chart{min-width:0;overflow-x:auto}
+svg{width:100%;height:auto;min-width:420px;display:block}
+svg text{fill:var(--mut);font-family:Prompt,sans-serif;font-size:12px}
+.leg{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--mut);margin-bottom:8px}
+.leg i{display:inline-block;width:11px;height:11px;margin-right:5px;border-radius:2px}
+.hl{color:var(--mint);font-weight:600}
+footer{padding:28px 6vw;color:var(--mut);font-size:13px}
+@media(max-width:760px){section{grid-template-columns:1fr}}
+</style></head><body>
+<header>
+<h1>DigiNex AI: จากไอเดียสู่ธุรกิจที่โตและทำกำไร</h1>
+<p>Dashboard เล่าเรื่องจาก Business Model Canvas ของกลุ่มอุตสาหกรรมดิจิทัล ระบบดิจิทัลและ AI ที่ช่วยลดต้นทุนและเวลาในการทำงานขององค์กร</p>
+<div class="kpis" id="kpis"></div>
+</header>
+
+<section><div class="story"><h2>1. ใครคือลูกค้าของเรา</h2><p id="t1"></p><small>ที่มา: Customer Segments ใน BMC</small></div>
+<div class="chart" id="c1"></div></section>
+
+<section><div class="story"><h2>2. รายรับมาจากไหน</h2><p id="t2"></p><small>ที่มา: Revenue Streams ใน BMC (ล้านบาท)</small></div>
+<div class="chart"><div class="leg" id="l2"></div><div id="c2"></div></div></section>
+
+<section><div class="story"><h2>3. เงินไปอยู่ที่ไหน</h2><p id="t3"></p><small>ที่มา: Cost Structure และ 4M (Man, Money, Material, Management)</small></div>
+<div class="chart" id="c3"></div></section>
+
+<section><div class="story"><h2>4. กำไรเกิดเมื่อไร</h2><p id="t4"></p><small>รายรับเทียบรายจ่ายรายไตรมาส (ล้านบาท)</small></div>
+<div class="chart"><div class="leg"><span><i style="background:var(--cyan)"></i>รายรับ</span><span><i style="background:var(--warn)"></i>รายจ่าย</span></div><div id="c4"></div></div></section>
+
+<section><div class="story"><h2>5. ช่องทางไหนปิดการขายได้ดี</h2><p id="t5"></p><small>ที่มา: Channels และ 4P (Place, Promotion)</small></div>
+<div class="chart" id="c5"></div></section>
+
+<section><div class="story"><h2>6. สิ่งที่ต้องทำต่อ</h2><div id="t6"></div></div>
+<div class="chart"><div id="swot"></div></div></section>
+
+<footer>กลุ่มอุตสาหกรรมดิจิทัล | 67160376 สิรภพ ณ ระนอง | วิชา Business Idea Creation<br>ข้อมูลเป็นข้อมูลจำลองเพื่อการเรียนรู้ (ดูไฟล์ใน data/)</footer>
+
+<script>
+// ข้อมูลตรงกับไฟล์ใน data/*.csv
+const Q=["Q1-25","Q2-25","Q3-25","Q4-25","Q1-26","Q2-26","Q3-26","Q4-26"];
+const REV={"Custom Software":[1.2,1.4,1.5,1.7,1.8,1.9,2.0,2.1],"SaaS":[0.3,0.5,0.8,1.2,1.7,2.3,3.0,3.8],"Maintenance":[0.2,0.3,0.4,0.5,0.7,0.9,1.1,1.3],"Consulting":[0.4,0.4,0.5,0.5,0.6,0.6,0.7,0.7],"Data & AI":[0.2,0.3,0.5,0.7,1.0,1.4,1.9,2.5]};
+const COST={"ทีมพัฒนา/AI":[1.4,1.5,1.6,1.8,2.0,2.2,2.4,2.6],"Cloud/Data Center":[0.3,0.35,0.45,0.55,0.7,0.85,1.0,1.2],"License":[0.15,0.2,0.2,0.25,0.3,0.3,0.35,0.4],"Security/Maintenance":[0.1,0.1,0.15,0.15,0.2,0.25,0.3,0.35],"Marketing/Support":[0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55],"R&D":[0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55]};
+const SEG=[["SMEs",42,38],["Enterprise",12,34],["Government",8,14],["Startup",25,8],["Education",13,6]];
+const CH=[["Direct Sales",220,48],["Website/Online",480,62],["Social/Content",650,45],["Events/Workshop",140,36],["Partners/Resellers",90,30]];
+const COL=["#1B77FF","#28D3EC","#66EBB7","#5BC0EB","#FFB454","#9B8CFF"];
+const $=i=>document.getElementById(i), sum=a=>a.reduce((x,y)=>x+y,0), f1=n=>n.toFixed(1);
+const tot=o=>Q.map((_,i)=>sum(Object.values(o).map(a=>a[i])));
+const R=tot(REV),C=tot(COST),P=R.map((r,i)=>r-C[i]);
+const last=Q.length-1, be=P.findIndex(p=>p>0);
+
+function stacked(data,w=640,h=300){const m={l:40,b:28,t:10,r:10},mx=Math.ceil(Math.max(...tot(data))),bw=(w-m.l-m.r)/Q.length;
+ let s=`<svg viewBox="0 0 ${w} ${h}" role="img">`;
+ for(let g=0;g<=4;g++){const y=h-m.b-(h-m.b-m.t)*g/4;s+=`<line x1="${m.l}" x2="${w-m.r}" y1="${y}" y2="${y}" stroke="#244A80"/><text x="${m.l-6}" y="${y+4}" text-anchor="end">${f1(mx*g/4)}</text>`}
+ Q.forEach((q,i)=>{let y=h-m.b;Object.values(data).forEach((a,k)=>{const bh=a[i]/mx*(h-m.b-m.t);y-=bh;s+=`<rect x="${m.l+i*bw+8}" y="${y}" width="${bw-16}" height="${bh}" fill="${COL[k]}"><title>${Object.keys(data)[k]} ${q}: ${a[i]}</title></rect>`});
+  s+=`<text x="${m.l+i*bw+bw/2}" y="${h-8}" text-anchor="middle">${q}</text>`});
+ return s+"</svg>"}
+function hbars(rows,maxv,label,fmt){let s=`<svg viewBox="0 0 640 ${rows.length*48+10}" role="img">`;
+ rows.forEach((r,i)=>{const y=i*48+8,w=r[1]/maxv*380;s+=`<text x="0" y="${y+20}">${r[0]}</text><rect x="150" y="${y}" width="${w}" height="26" rx="3" fill="${COL[i%6]}"/><text x="${156+w}" y="${y+18}" style="fill:#EAF2FF">${fmt(r)}</text>`});
+ return s+"</svg>"}
+function lines(w=640,h=300){const m={l:40,b:28,t:10,r:14},mx=Math.ceil(Math.max(...R,...C)),X=i=>m.l+i*(w-m.l-m.r)/(Q.length-1),Y=v=>h-m.b-v/mx*(h-m.b-m.t);
+ let s=`<svg viewBox="0 0 ${w} ${h}" role="img">`;
+ for(let g=0;g<=4;g++){const y=Y(mx*g/4);s+=`<line x1="${m.l}" x2="${w-m.r}" y1="${y}" y2="${y}" stroke="#244A80"/><text x="${m.l-6}" y="${y+4}" text-anchor="end">${f1(mx*g/4)}</text>`}
+ const pl=(a,c)=>`<polyline fill="none" stroke="${c}" stroke-width="3" points="${a.map((v,i)=>X(i)+","+Y(v)).join(" ")}"/>`+a.map((v,i)=>`<circle cx="${X(i)}" cy="${Y(v)}" r="4" fill="${c}"><title>${Q[i]}: ${f1(v)}</title></circle>`).join("");
+ s+=pl(C,"#FFB454")+pl(R,"#28D3EC");
+ Q.forEach((q,i)=>s+=`<text x="${X(i)}" y="${h-8}" text-anchor="middle">${q}</text>`);
+ if(be>=0)s+=`<line x1="${X(be)}" x2="${X(be)}" y1="${m.t}" y2="${h-m.b}" stroke="#66EBB7" stroke-dasharray="5 4"/><text x="${X(be)+6}" y="${m.t+12}" style="fill:#66EBB7">เริ่มมีกำไร ${Q[be]}</text>`;
+ return s+"</svg>"}
+
+const sR=sum(R),sC=sum(C),sP=sR-sC,saasShare=REV["SaaS"][last]/R[last]*100,recur=(REV["SaaS"][last]+REV["Maintenance"][last])/R[last]*100;
+$("kpis").innerHTML=[[f1(R[last])+" ล้าน","รายรับ "+Q[last]],["+"+Math.round((R[last]/R[0]-1)*100)+"%","รายรับโตจาก "+Q[0]],[Math.round(P[last]/R[last]*100)+"%","อัตรากำไร "+Q[last]],[saasShare.toFixed(0)+"%","สัดส่วน SaaS ล่าสุด"]].map(k=>`<div class="kpi"><b>${k[0]}</b><span>${k[1]}</span></div>`).join("");
+
+const totCust=sum(SEG.map(s=>s[1]));
+$("t1").innerHTML=`ลูกค้า ${totCust} ราย ส่วนใหญ่คือ <span class="hl">SMEs (${SEG[0][1]} ราย)</span> แต่รายได้เกือบเท่ากันมาจาก <span class="hl">Enterprise ที่มีเพียง ${SEG[1][1]} ราย</span> (${SEG[1][2]}% ของรายได้) สะท้อนว่า SMEs ให้ปริมาณ ส่วน Enterprise ให้มูลค่าต่อรายสูง`;
+$("c1").innerHTML=`<div class="leg"><span>แท่ง = สัดส่วนรายได้ (%)</span></div>`+hbars(SEG,45,"",r=>`${r[2]}% รายได้ | ${r[1]} ราย`);
+$("t2").innerHTML=`รายรับรวมโตจาก ${f1(R[0])} เป็น ${f1(R[last])} ล้านบาทต่อไตรมาส จุดเปลี่ยนคือ <span class="hl">SaaS ซึ่งโตจาก ${REV.SaaS[0]} เป็น ${REV.SaaS[last]} ล้านบาท</span> ปัจจุบัน SaaS และ Maintenance รวมกันเป็นรายรับประจำ ${recur.toFixed(0)}% ช่วยให้กระแสเงินสดนิ่งขึ้น`;
+$("l2").innerHTML=Object.keys(REV).map((k,i)=>`<span><i style="background:${COL[i]}"></i>${k}</span>`).join("");
+$("c2").innerHTML=stacked(REV);
+const cs=Object.entries(COST).map(([k,a])=>[k,sum(a)]).sort((a,b)=>b[1]-a[1]);
+$("t3").innerHTML=`ต้นทุนรวม ${f1(sC)} ล้านบาท <span class="hl">${(cs[0][1]/sC*100).toFixed(0)}% เป็นค่าคน</span> (ทีมพัฒนา/AI Engineer/Data Scientist) รองลงมาคือ Cloud ${(cs[1][1]/sC*100).toFixed(0)}% ดังนั้นการดึงและรักษาคนเก่ง รวมถึงบริหาร Cloud ให้คุ้มค่า คือเรื่องหลักของ 4M`;
+$("c3").innerHTML=hbars(cs,Math.max(...cs.map(c=>c[1]))*1.1,"",r=>f1(r[1])+" ล้านบาท ("+(r[1]/sC*100).toFixed(0)+"%)");
+$("t4").innerHTML=`รายรับแซงรายจ่ายตั้งแต่ <span class="hl">${Q[be]}</span> และกำไรสะสม ${f1(sP)} ล้านบาท ไตรมาสล่าสุดกำไร ${f1(P[last])} ล้านบาท (${Math.round(P[last]/R[last]*100)}%) ช่องว่างกว้างขึ้นเพราะรายรับ SaaS โตเร็วกว่าค่าคน`;
+$("c4").innerHTML=lines();
+const cc=CH.map(c=>[c[0],c[2]/c[1]*100,c[1],c[2]]);const bestC=[...cc].sort((a,b)=>b[1]-a[1])[0],mostL=[...CH].sort((a,b)=>b[1]-a[1])[0];
+$("t5").innerHTML=`${mostL[0]} ให้ Leads มากที่สุด (${mostL[1]}) แต่ปิดได้เพียง ${(mostL[2]/mostL[1]*100).toFixed(0)}% ขณะที่ <span class="hl">${bestC[0]} ปิดได้ ${bestC[1].toFixed(0)}%</span> สูงสุด ควรเพิ่มงบให้ช่องทางที่แปลงเป็นลูกค้าได้ดี และปรับ Content ให้ดึง Lead คุณภาพขึ้น`;
+$("c5").innerHTML=`<div class="leg"><span>แท่ง = อัตราปิดการขาย (%)</span></div>`+hbars(cc,45,"",r=>`${r[1].toFixed(0)}% (${r[3]}/${r[2]})`);
+$("t6").innerHTML=`<p>สรุปเป็นข้อเสนอแนะจากข้อมูลและ SWOT:</p><p>• <span class="hl">ขยาย SaaS และ Data & AI</span> เพราะโตเร็วและเป็นรายรับต่อเนื่อง</p><p>• <span class="hl">ลงทุนกับคน</span> ทั้งการรับเพิ่มและพัฒนาทักษะ เพราะเป็นต้นทุนหลักและเป็นความได้เปรียบ</p><p>• <span class="hl">ดูแลความปลอดภัยข้อมูล</span> เพื่อรับมือภัยคุกคามด้าน Cybersecurity</p><p>• <span class="hl">ย้ายงบไปช่องทางที่ปิดการขายได้ดี</span> และทำ Case Study เพิ่มความน่าเชื่อถือ</p>`;
+const sw=[["จุดแข็ง","AI ช่วยเพิ่มประสิทธิภาพ ลดเวลาและต้นทุนลูกค้า","#66EBB7"],["จุดอ่อน","ต้องลงทุนเทคโนโลยีสูง และต้องมีบุคลากรเฉพาะด้าน","#FFB454"],["โอกาส","ธุรกิจต้องการ Digital Transformation มากขึ้น","#28D3EC"],["อุปสรรค","แข่งขันสูง เทคโนโลยีเปลี่ยนเร็ว เสี่ยง Cybersecurity","#FF7A90"]];
+$("swot").innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">`+sw.map(s=>`<div style="border-left:4px solid ${s[2]};background:rgba(255,255,255,.06);padding:12px 16px"><b style="color:${s[2]}">${s[0]}</b><div style="font-size:14px">${s[1]}</div></div>`).join("")+`</div>`;
+</script></body></html>
