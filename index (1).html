@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="th"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DigiNex AI – Dashboard เล่าเรื่อง</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#123B6D;--bg:#0A1E3F;--blue:#1B77FF;--cyan:#28D3EC;--sky:#5BC0EB;--mint:#66EBB7;--ink:#EAF2FF;--mut:#9DB4D6;--line:#244A80;--warn:#FFB454}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Prompt',system-ui,sans-serif;line-height:1.6}
+header{padding:56px 6vw 40px;border-bottom:1px solid var(--line);background:linear-gradient(135deg,#0A1E3F,#123B6D)}
+header h1{font-size:clamp(28px,5vw,52px);margin:0 0 8px;font-weight:700}
+header p{margin:0;color:var(--mut);max-width:62ch}
+.kpis{display:flex;flex-wrap:wrap;gap:14px;margin-top:28px}
+.kpi{background:rgba(255,255,255,.06);border-left:4px solid var(--cyan);padding:10px 18px;min-width:150px}
+.kpi b{display:block;font-size:28px}.kpi span{font-size:13px;color:var(--mut)}
+section{padding:44px 6vw;border-bottom:1px solid var(--line);display:grid;grid-template-columns:minmax(240px,1fr) 2fr;gap:32px}
+section h2{margin:0 0 10px;font-size:24px;color:var(--cyan)}
+section .story p{margin:0 0 10px;color:var(--ink)}
+section .story small{color:var(--mut)}
+.chart{min-width:0;overflow-x:auto}
+svg{width:100%;height:auto;min-width:420px;display:block}
+svg text{fill:var(--mut);font-family:Prompt,sans-serif;font-size:12px}
+.leg{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--mut);margin-bottom:8px}
+.leg i{display:inline-block;width:11px;height:11px;margin-right:5px;border-radius:2px}
+.hl{color:var(--mint);font-weight:600}
+footer{padding:28px 6vw;color:var(--mut);font-size:13px}
+@media(max-width:760px){section{grid-template-columns:1fr}}
+
+.hex{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 66L0 50V16L28 0l28 16v34zM28 100L0 84V50M28 100l28-16V50' fill='none' stroke='%2328D3EC' stroke-opacity='.13'/%3E%3C/svg%3E")}
+header{position:relative;overflow:hidden;display:grid;grid-template-columns:1.4fr 1fr;gap:24px;align-items:center;background-color:#0A1E3F}
+header::before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,rgba(10,30,63,.96) 35%,rgba(18,59,109,.55)),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 66L0 50V16L28 0l28 16v34zM28 100L0 84V50M28 100l28-16V50' fill='none' stroke='%2328D3EC' stroke-opacity='.13'/%3E%3C/svg%3E")}
+header>*{position:relative}
+.hero-art{display:flex;justify-content:center;align-items:center;position:relative}
+.hero-art .brain{position:absolute;width:88%;opacity:.28;-webkit-mask-image:radial-gradient(circle,#000 35%,transparent 72%);mask-image:radial-gradient(circle,#000 35%,transparent 72%)}
+.hero-art .logo{position:relative;width:min(300px,80%);filter:drop-shadow(0 0 28px rgba(40,211,236,.35))}
+.chart{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:16px;padding:20px}
+section:nth-of-type(even){background:rgba(18,59,109,.28)}
+section h2{display:flex;align-items:center;gap:12px}
+.ic{flex:none;width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#1B77FF,#28D3EC);box-shadow:0 0 18px rgba(40,211,236,.35)}
+.ic svg{width:26px;height:26px;min-width:0;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.kpi{border-radius:12px;border:1px solid var(--line);border-left:4px solid var(--mint)}
+.kpi b{color:var(--cyan)}
+footer{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+footer img{height:64px}
+@media(max-width:760px){header{grid-template-columns:1fr}.hero-art{order:-1;min-height:200px}}
+
+.hit{cursor:pointer}.hit:hover{fill:rgba(40,211,236,.12)}
+.det{margin-top:14px;padding:12px 16px;border-radius:10px;background:rgba(40,211,236,.1);border-left:4px solid var(--cyan);font-size:14px}.det.mut{color:var(--mut);background:rgba(255,255,255,.04);border-color:var(--line)}
+.lg{cursor:pointer;user-select:none;padding:2px 8px;border:1px solid var(--line);border-radius:20px}.lg.off{opacity:.35;text-decoration:line-through}
+.sel{display:inline-block;margin-top:18px;color:var(--mut);font-size:14px}.sel select{background:#123B6D;color:#fff;border:1px solid var(--cyan);border-radius:8px;padding:4px 10px;font-family:inherit}
+.tabs,.btns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}.btns{margin:12px 0}
+button{font-family:inherit;color:#fff;background:#123B6D;border:1px solid var(--line);border-radius:8px;padding:6px 14px;cursor:pointer}button:hover,button.on{background:var(--blue);border-color:var(--cyan)}
+table{border-collapse:collapse;font-size:13px}th,td{padding:4px 6px;text-align:left;white-space:nowrap}th{color:var(--mut);font-weight:400}
+td input{width:68px;background:#0A1E3F;color:#fff;border:1px solid var(--line);border-radius:6px;padding:4px 6px;font-family:inherit}td input:focus{outline:2px solid var(--cyan)}
+.sw{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+</style></head><body>
+<header>
+<div>
+<h1>DigiNex AI: จากไอเดียสู่ธุรกิจที่โตและทำกำไร</h1>
+<p>Dashboard เล่าเรื่องจาก Business Model Canvas ของกลุ่มอุตสาหกรรมดิจิทัล ระบบดิจิทัลและ AI ที่ช่วยลดต้นทุนและเวลาในการทำงานขององค์กร</p>
+<label class="sel">ดูข้อมูลไตรมาส <select id="qs"></select></label>
+<div class="kpis" id="kpis"></div>
+</div>
+<div class="hero-art"><img class="brain" src="assets/brain.png" alt=""><img class="logo" src="assets/logo.png" alt="โลโก้ DigiNex AI"></div>
+</header>
+
+<section><div class="story"><h2><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="17" cy="9" r="2.5"/><path d="M17.5 14c2.5.3 4 2 4 4.5"/></svg></span><span>1. ใครคือลูกค้าของเรา</span></h2><p id="t1"></p><small>ที่มา: Customer Segments ใน BMC</small></div>
+<div class="chart" id="c1"></div></section>
+
+<section><div class="story"><h2><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M14.5 9.5c0-1.2-1-2-2.5-2s-2.5.8-2.5 2 1 1.8 2.5 2 2.5.8 2.5 2-1 2-2.5 2-2.5-.8-2.5-2M12 6v1.5M12 16.5V18"/></svg></span><span>2. รายรับมาจากไหน</span></h2><p id="t2"></p><small>ที่มา: Revenue Streams ใน BMC (ล้านบาท)</small></div>
+<div class="chart"><div class="leg" id="l2"></div><div id="c2"></div><div id="d2"></div></div></section>
+
+<section><div class="story"><h2><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v9h9"/></svg></span><span>3. เงินไปอยู่ที่ไหน</span></h2><p id="t3"></p><small>ที่มา: Cost Structure และ 4M (Man, Money, Material, Management)</small></div>
+<div class="chart" id="c3"></div></section>
+
+<section><div class="story"><h2><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/></svg></span><span>4. กำไรเกิดเมื่อไร</span></h2><p id="t4"></p><small>รายรับเทียบรายจ่ายรายไตรมาส (ล้านบาท)</small></div>
+<div class="chart"><div class="leg"><span><i style="background:var(--cyan)"></i>รายรับ</span><span><i style="background:var(--warn)"></i>รายจ่าย</span></div><div id="c4"></div><div id="d4"></div></div></section>
+
+<section><div class="story"><h2><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 8v7l-4 2v-9z"/></svg></span><span>5. ช่องทางไหนปิดการขายได้ดี</span></h2><p id="t5"></p><small>ที่มา: Channels และ 4P (Place, Promotion)</small></div>
+<div class="chart" id="c5"></div></section>
+
+<section><div class="story"><h2><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3 2 5 5 5 9l-2 3H9l-2-3c0-4 2-7 5-9z"/><circle cx="12" cy="10" r="1.5"/><path d="M9 18l-1 3M15 18l1 3"/></svg></span><span>6. สิ่งที่ต้องทำต่อ</span></h2><div id="t6"></div></div>
+<div class="chart"><div id="swot"></div></div></section>
+
+<section id="edit"><div class="story"><h2><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></span><span>7. แก้ไขข้อมูล</span></h2><p>พิมพ์ตัวเลขในตาราง กราฟ KPI และข้อความเล่าเรื่องจะเปลี่ยนทันที ลองปรับดูว่าธุรกิจจะเป็นอย่างไร</p><div class="btns"><button onclick="saveD()">💾 บันทึกในเบราว์เซอร์</button><button onclick="dlCSV()">⬇ ดาวน์โหลด CSV</button><button onclick="resetD()">↺ รีเซ็ต</button></div><small id="msg" class="hl"></small></div><div class="chart"><div class="tabs" id="tabs"></div><div id="tbl" style="overflow-x:auto"></div></div></section>
+<footer><img src="assets/logo.png" alt="DigiNex AI"><div>กลุ่มอุตสาหกรรมดิจิทัล | 67160376 สิรภพ ณ ระนอง | วิชา Business Idea Creation<br>ข้อมูลเป็นข้อมูลจำลองเพื่อการเรียนรู้ (ดูไฟล์ใน data/)</div></footer>
+
+<script>
+const Q=["Q1-25","Q2-25","Q3-25","Q4-25","Q1-26","Q2-26","Q3-26","Q4-26"];
+const DEF={REV:{"Custom Software":[1.2,1.4,1.5,1.7,1.8,1.9,2.0,2.1],"SaaS":[0.3,0.5,0.8,1.2,1.7,2.3,3.0,3.8],"Maintenance":[0.2,0.3,0.4,0.5,0.7,0.9,1.1,1.3],"Consulting":[0.4,0.4,0.5,0.5,0.6,0.6,0.7,0.7],"Data & AI":[0.2,0.3,0.5,0.7,1.0,1.4,1.9,2.5]},
+COST:{"ทีมพัฒนา/AI":[1.4,1.5,1.6,1.8,2.0,2.2,2.4,2.6],"Cloud/Data Center":[0.3,0.35,0.45,0.55,0.7,0.85,1.0,1.2],"License":[0.15,0.2,0.2,0.25,0.3,0.3,0.35,0.4],"Security/Maintenance":[0.1,0.1,0.15,0.15,0.2,0.25,0.3,0.35],"Marketing/Support":[0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55],"R&D":[0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55]},
+SEG:[["SMEs",42,38],["Enterprise",12,34],["Government",8,14],["Startup",25,8],["Education",13,6]],
+CH:[["Direct Sales",220,48],["Website/Online",480,62],["Social/Content",650,45],["Events/Workshop",140,36],["Partners/Resellers",90,30]]};
+const COL=["#1B77FF","#28D3EC","#66EBB7","#5BC0EB","#FFB454","#9B8CFF"];
+const $=i=>document.getElementById(i),sum=a=>a.reduce((x,y)=>x+y,0),f1=n=>n.toFixed(1),cl=o=>JSON.parse(JSON.stringify(o));
+let D=cl(DEF),sel=Q.length-1,H=new Set(),tab="REV",sS=-1,sC=-1,sK=-1,R,C,P;
+try{const sv=localStorage.getItem("dx_data");if(sv)D=JSON.parse(sv)}catch(e){}
+const tot=o=>Q.map((_,i)=>sum(Object.values(o).map(a=>a[i])));
+const grid=(w,h,m,mx)=>{let s="";for(let g=0;g<=4;g++){const y=h-m.b-(h-m.b-m.t)*g/4;s+=`<line x1="${m.l}" x2="${w-m.r}" y1="${y}" y2="${y}" stroke="#244A80"/><text x="${m.l-6}" y="${y+4}" text-anchor="end">${f1(mx*g/4)}</text>`}return s};
+function stacked(data,w=640,h=300){const m={l:40,b:28,t:10,r:10},ks=Object.keys(data),bw=(w-m.l-m.r)/Q.length,tv=Q.map((_,i)=>sum(ks.filter(k=>!H.has(k)).map(k=>data[k][i]))),mx=Math.max(1,Math.ceil(Math.max(...tv)));
+ let s=`<svg viewBox="0 0 ${w} ${h}">`+grid(w,h,m,mx);
+ Q.forEach((q,i)=>{let y=h-m.b;const x=m.l+i*bw;if(i==sel)s+=`<rect x="${x}" y="0" width="${bw}" height="${h-m.b}" fill="#28D3EC" opacity=".1"/>`;
+  ks.forEach((k,j)=>{if(H.has(k))return;const bh=data[k][i]/mx*(h-m.b-m.t);y-=bh;s+=`<rect x="${x+8}" y="${y}" width="${bw-16}" height="${bh}" fill="${COL[j]}"/>`});
+  s+=`<text x="${x+bw/2}" y="${h-8}" text-anchor="middle" ${i==sel?'style="fill:#28D3EC;font-weight:700"':''}>${q}</text><rect class="hit" x="${x}" y="0" width="${bw}" height="${h}" fill="transparent" onclick="pickQ(${i})"><title>${q}: รวม ${f1(tv[i])} (กดเพื่อดูรายละเอียด)</title></rect>`});
+ return s+"</svg>"}
+function hbars(rows,maxv,fmt,fn,si){let s=`<svg viewBox="0 0 640 ${rows.length*48+10}">`;
+ rows.forEach((r,i)=>{const y=i*48+8,w=Math.max(2,r[1]/maxv*380);s+=`<text x="0" y="${y+20}" ${i==si?'style="fill:#28D3EC;font-weight:700"':''}>${r[0]}</text><rect class="hit" x="150" y="${y}" width="${w}" height="26" rx="3" fill="${COL[i%6]}" ${i==si?'stroke="#fff" stroke-width="2"':''} onclick="${fn}(${i})"><title>กดเพื่อดูรายละเอียด</title></rect><text x="${156+w}" y="${y+18}" style="fill:#EAF2FF">${fmt(r)}</text>`});
+ return s+"</svg>"}
+function lines(w=640,h=300){const m={l:40,b:28,t:10,r:14},mx=Math.max(1,Math.ceil(Math.max(...R,...C))),bw=(w-m.l-m.r)/(Q.length-1),X=i=>m.l+i*bw,Y=v=>h-m.b-v/mx*(h-m.b-m.t),be=P.findIndex(p=>p>0);
+ let s=`<svg viewBox="0 0 ${w} ${h}">`+grid(w,h,m,mx);
+ const pl=(a,c)=>`<polyline fill="none" stroke="${c}" stroke-width="3" points="${a.map((v,i)=>X(i)+","+Y(v)).join(" ")}"/>`+a.map((v,i)=>`<circle cx="${X(i)}" cy="${Y(v)}" r="${i==sel?7:4}" fill="${c}"/>`).join("");
+ s+=pl(C,"#FFB454")+pl(R,"#28D3EC");
+ Q.forEach((q,i)=>s+=`<text x="${X(i)}" y="${h-8}" text-anchor="middle" ${i==sel?'style="fill:#28D3EC;font-weight:700"':''}>${q}</text><rect class="hit" x="${X(i)-bw/2}" y="0" width="${bw}" height="${h}" fill="transparent" onclick="pickQ(${i})"><title>${q}: รายรับ ${f1(R[i])} รายจ่าย ${f1(C[i])}</title></rect>`);
+ if(be>=0)s+=`<line x1="${X(be)}" x2="${X(be)}" y1="${m.t}" y2="${h-m.b}" stroke="#66EBB7" stroke-dasharray="5 4"/><text x="${X(be)+6}" y="${m.t+12}" style="fill:#66EBB7">เริ่มมีกำไร ${Q[be]}</text>`;
+ return s+"</svg>"}
+const pickQ=i=>{sel=i;$("qs").value=i;render()},pickS=i=>{sS=i;render()},pickC=i=>{sC=i;render()},pickK=i=>{sK=i;render()},tg=j=>{const k=Object.keys(D.REV)[j];H.has(k)?H.delete(k):H.add(k);render()};
+const det=h=>h?`<div class="det">${h}</div>`:`<div class="det mut">👆 กดที่กราฟเพื่อดูรายละเอียด</div>`;
+function render(){
+ R=tot(D.REV);C=tot(D.COST);P=R.map((r,i)=>r-C[i]);const last=Q.length-1,be=P.findIndex(p=>p>0),sR=sum(R),sC_=sum(C),sP=sR-sC_;
+ const rv=D.REV,mg=i=>R[i]?Math.round(P[i]/R[i]*100):0,recur=(rv.SaaS[last]+rv.Maintenance[last])/(R[last]||1)*100;
+ $("kpis").innerHTML=[[f1(R[sel])+" ล้าน","รายรับ "+Q[sel]],[sel?"+"+Math.round((R[sel]/(R[0]||1)-1)*100)+"%":"-","รายรับโตจาก "+Q[0]],[mg(sel)+"%","อัตรากำไร "+Q[sel]],[(rv.SaaS[sel]/(R[sel]||1)*100).toFixed(0)+"%","สัดส่วน SaaS "+Q[sel]]].map(k=>`<div class="kpi"><b>${k[0]}</b><span>${k[1]}</span></div>`).join("");
+ const S=D.SEG,tc=sum(S.map(s=>s[1])),tC=[...S].sort((a,b)=>b[1]-a[1])[0],tS=[...S].sort((a,b)=>b[2]-a[2])[0];
+ $("t1").innerHTML=`ลูกค้า ${tc} ราย ส่วนใหญ่คือ <span class="hl">${tC[0]} (${tC[1]} ราย)</span> แต่กลุ่มที่สร้างรายได้สูงสุดคือ <span class="hl">${tS[0]} (${tS[2]}% ของรายได้จาก ${tS[1]} ราย)</span>`;
+ $("c1").innerHTML=`<div class="leg">แท่ง = สัดส่วนรายได้ (%)</div>`+hbars(S.map(s=>[s[0],s[2]]),Math.max(...S.map(s=>s[2]),1)*1.15,r=>r[1]+"%",'pickS',sS)+det(sS>=0&&`<b>${S[sS][0]}</b> ${S[sS][1]} ราย (${(S[sS][1]/(tc||1)*100).toFixed(0)}% ของลูกค้า) สร้างรายได้ ${S[sS][2]}% คิดเป็น ≈ <span class="hl">${(S[sS][2]/100*R[last]/(S[sS][1]||1)).toFixed(2)} ล้านบาท/ราย/ไตรมาส</span>`);
+ $("t2").innerHTML=`รายรับรวมโตจาก ${f1(R[0])} เป็น ${f1(R[last])} ล้านบาทต่อไตรมาส <span class="hl">SaaS โตจาก ${rv.SaaS[0]} เป็น ${rv.SaaS[last]} ล้านบาท</span> SaaS รวม Maintenance เป็นรายรับประจำ ${recur.toFixed(0)}% ของไตรมาสล่าสุด<br><small>กดชื่อในคำอธิบายสีเพื่อซ่อน/แสดงสาย และกดที่ไตรมาสเพื่อดูรายละเอียด</small>`;
+ $("l2").innerHTML=Object.keys(rv).map((k,i)=>`<span class="lg ${H.has(k)?'off':''}" onclick="tg(${i})"><i style="background:${COL[i]}"></i>${k}</span>`).join("");
+ const qd=`<b>${Q[sel]}</b> รายรับ ${f1(R[sel])} | รายจ่าย ${f1(C[sel])} | กำไร <span class="hl">${f1(P[sel])}</span> (${mg(sel)}%)<br>`+Object.keys(rv).map(k=>`${k} <b>${rv[k][sel]}</b>`).join(" · ");
+ $("c2").innerHTML=stacked(rv);$("d2").innerHTML=det(qd);
+ const cs=Object.entries(D.COST).map(([k,a])=>[k,sum(a),a]).sort((a,b)=>b[1]-a[1]);
+ $("t3").innerHTML=`ต้นทุนรวม ${f1(sC_)} ล้านบาท <span class="hl">${(cs[0][1]/(sC_||1)*100).toFixed(0)}% เป็น ${cs[0][0]}</span> รองลงมาคือ ${cs[1][0]} ${(cs[1][1]/(sC_||1)*100).toFixed(0)}% การดึงและรักษาคนเก่งและบริหาร Cloud ให้คุ้มค่าจึงเป็นเรื่องหลักของ 4M`;
+ if(sK>=cs.length)sK=-1;const k=cs[sK];
+ $("c3").innerHTML=hbars(cs,Math.max(...cs.map(c=>c[1]),1)*1.5,r=>f1(r[1])+" ล้าน ("+(r[1]/(sC_||1)*100).toFixed(0)+"%)",'pickK',sK)+det(k&&`<b>${k[0]}</b> รวม ${f1(k[1])} ล้านบาท | ไตรมาสล่าสุด ${k[2][last]} (จาก ${k[2][0]} เมื่อ ${Q[0]}, เพิ่ม ${Math.round((k[2][last]/(k[2][0]||1)-1)*100)}%)`);
+ $("t4").innerHTML=be>=0?`รายรับแซงรายจ่ายตั้งแต่ <span class="hl">${Q[be]}</span> กำไรสะสม ${f1(sP)} ล้านบาท ไตรมาสล่าสุดกำไร ${f1(P[last])} ล้านบาท (${mg(last)}%)`:`รายจ่ายยังสูงกว่ารายรับทุกไตรมาส กำไรสะสม <span class="hl">${f1(sP)}</span> ล้านบาท ลองปรับตัวเลขในส่วนแก้ไขเพื่อหาจุดคุ้มทุน`;
+ $("c4").innerHTML=lines();$("d4").innerHTML=det(qd);
+ const cc=D.CH.map(c=>[c[0],c[1]?c[2]/c[1]*100:0,c[1],c[2]]),bC=[...cc].sort((a,b)=>b[1]-a[1])[0],mL=[...D.CH].sort((a,b)=>b[1]-a[1])[0];
+ $("t5").innerHTML=`${mL[0]} ให้ Leads มากที่สุด (${mL[1]}) แต่ปิดได้ ${(mL[1]?mL[2]/mL[1]*100:0).toFixed(0)}% ขณะที่ <span class="hl">${bC[0]} ปิดได้ ${bC[1].toFixed(0)}%</span> สูงสุด ควรเพิ่มงบให้ช่องทางที่แปลงเป็นลูกค้าได้ดี`;
+ $("c5").innerHTML=`<div class="leg">แท่ง = อัตราปิดการขาย (%)</div>`+hbars(cc,Math.max(...cc.map(c=>c[1]),1)*1.3,r=>`${r[1].toFixed(0)}% (${r[3]}/${r[2]})`,'pickC',sC)+det(sC>=0&&`<b>${cc[sC][0]}</b> ${cc[sC][2]} Leads ปิดได้ ${cc[sC][3]} ราย = ${cc[sC][1].toFixed(1)}% | อันดับ ${[...cc].sort((a,b)=>b[1]-a[1]).findIndex(x=>x[0]==cc[sC][0])+1} จาก ${cc.length}`);
+ $("t6").innerHTML=`<p>สรุปข้อเสนอแนะจากข้อมูลและ SWOT:</p><p>• <span class="hl">ขยาย SaaS และ Data & AI</span> เพราะโตเร็วและเป็นรายรับต่อเนื่อง</p><p>• <span class="hl">ลงทุนกับคน</span> เพราะเป็นต้นทุนหลักและเป็นความได้เปรียบ</p><p>• <span class="hl">ดูแลความปลอดภัยข้อมูล</span> รับมือภัยคุกคาม Cybersecurity</p><p>• <span class="hl">ย้ายงบไปช่องทางที่ปิดการขายได้ดี</span> และทำ Case Study เพิ่มความน่าเชื่อถือ</p>`;
+ const sw=[["จุดแข็ง","AI ช่วยเพิ่มประสิทธิภาพ ลดเวลาและต้นทุนลูกค้า","#66EBB7"],["จุดอ่อน","ต้องลงทุนเทคโนโลยีสูง และต้องมีบุคลากรเฉพาะด้าน","#FFB454"],["โอกาส","ธุรกิจต้องการ Digital Transformation มากขึ้น","#28D3EC"],["อุปสรรค","แข่งขันสูง เทคโนโลยีเปลี่ยนเร็ว เสี่ยง Cybersecurity","#FF7A90"]];
+ $("swot").innerHTML=`<div class="sw">`+sw.map(s=>`<div style="border-left:4px solid ${s[2]};background:rgba(255,255,255,.06);padding:12px 16px"><b style="color:${s[2]}">${s[0]}</b><div style="font-size:14px">${s[1]}</div></div>`).join("")+`</div>`}
+const TABS=[["REV","รายรับ"],["COST","รายจ่าย"],["SEG","ลูกค้า"],["CH","ช่องทาง"]];
+function editTbl(){$("tabs").innerHTML=TABS.map(t=>`<button class="${t[0]==tab?'on':''}" onclick="tab='${t[0]}';editTbl()">${t[1]}</button>`).join("");
+ let h="<table>";
+ if(tab=="REV"||tab=="COST"){h+="<tr><th>ล้านบาท</th>"+Q.map(q=>`<th>${q}</th>`).join("")+"</tr>";for(const k in D[tab])h+=`<tr><th>${k}</th>`+D[tab][k].map((v,i)=>`<td><input type="number" step="0.05" min="0" value="${v}" data-t="${tab}" data-k="${k}" data-i="${i}"></td>`).join("")+"</tr>"}
+ else{h+="<tr><th>"+(tab=="SEG"?"กลุ่ม</th><th>จำนวนลูกค้า</th><th>สัดส่วนรายได้ %":"ช่องทาง</th><th>Leads</th><th>ปิดการขาย")+"</th></tr>";D[tab].forEach((r,i)=>h+=`<tr><th>${r[0]}</th>`+[1,2].map(c=>`<td><input type="number" min="0" value="${r[c]}" data-t="${tab}" data-r="${i}" data-c="${c}"></td>`).join("")+"</tr>")}
+ $("tbl").innerHTML=h+"</table>"}
+document.addEventListener("input",e=>{const t=e.target.dataset;if(!t.t)return;const v=Math.max(0,parseFloat(e.target.value)||0);if(t.k!==undefined)D[t.t][t.k][+t.i]=v;else D[t.t][+t.r][+t.c]=v;render()});
+function saveD(){try{localStorage.setItem("dx_data",JSON.stringify(D));msg("บันทึกในเบราว์เซอร์นี้แล้ว")}catch(e){msg("บันทึกไม่ได้ในเบราว์เซอร์นี้")}}
+function resetD(){D=cl(DEF);try{localStorage.removeItem("dx_data")}catch(e){}render();editTbl();msg("รีเซ็ตเป็นข้อมูลเริ่มต้นแล้ว")}
+function msg(t){$("msg").textContent=t;setTimeout(()=>$("msg").textContent="",2500)}
+function dlCSV(){let rows;if(tab=="REV"||tab=="COST"){rows=[["quarter",...Object.keys(D[tab]).map(k=>k.replace(/[ ,]/g,"_"))]];Q.forEach((q,i)=>rows.push([q,...Object.values(D[tab]).map(a=>a[i])]))}else rows=[tab=="SEG"?["segment","customers","revenue_share_pct"]:["channel","leads","converted"],...D[tab]];
+ const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+rows.map(r=>r.join(",")).join("\n")],{type:"text/csv"}));a.download={REV:"revenue_by_stream",COST:"costs",SEG:"segments",CH:"channels"}[tab]+"_edited.csv";a.click()}
+$("qs").innerHTML=Q.map((q,i)=>`<option value="${i}">${q}</option>`).join("");$("qs").value=sel;$("qs").onchange=e=>pickQ(+e.target.value);
+render();editTbl();
+</script></body></html>
