@@ -25,32 +25,53 @@ svg text{fill:var(--mut);font-family:Prompt,sans-serif;font-size:12px}
 .hl{color:var(--mint);font-weight:600}
 footer{padding:28px 6vw;color:var(--mut);font-size:13px}
 @media(max-width:760px){section{grid-template-columns:1fr}}
+
+.hex{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 66L0 50V16L28 0l28 16v34zM28 100L0 84V50M28 100l28-16V50' fill='none' stroke='%2328D3EC' stroke-opacity='.13'/%3E%3C/svg%3E")}
+header{position:relative;overflow:hidden;display:grid;grid-template-columns:1.4fr 1fr;gap:24px;align-items:center;background-color:#0A1E3F}
+header::before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,rgba(10,30,63,.96) 35%,rgba(18,59,109,.55)),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 66L0 50V16L28 0l28 16v34zM28 100L0 84V50M28 100l28-16V50' fill='none' stroke='%2328D3EC' stroke-opacity='.13'/%3E%3C/svg%3E")}
+header>*{position:relative}
+.hero-art{display:flex;justify-content:center;align-items:center;position:relative}
+.hero-art .brain{position:absolute;width:88%;opacity:.28;-webkit-mask-image:radial-gradient(circle,#000 35%,transparent 72%);mask-image:radial-gradient(circle,#000 35%,transparent 72%)}
+.hero-art .logo{position:relative;width:min(300px,80%);filter:drop-shadow(0 0 28px rgba(40,211,236,.35))}
+.chart{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:16px;padding:20px}
+section:nth-of-type(even){background:rgba(18,59,109,.28)}
+section h2{display:flex;align-items:center;gap:12px}
+.ic{flex:none;width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#1B77FF,#28D3EC);box-shadow:0 0 18px rgba(40,211,236,.35)}
+.ic svg{width:26px;height:26px;min-width:0;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.kpi{border-radius:12px;border:1px solid var(--line);border-left:4px solid var(--mint)}
+.kpi b{color:var(--cyan)}
+footer{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+footer img{height:64px}
+@media(max-width:760px){header{grid-template-columns:1fr}.hero-art{order:-1;min-height:200px}}
 </style></head><body>
 <header>
+<div>
 <h1>DigiNex AI: จากไอเดียสู่ธุรกิจที่โตและทำกำไร</h1>
 <p>Dashboard เล่าเรื่องจาก Business Model Canvas ของกลุ่มอุตสาหกรรมดิจิทัล ระบบดิจิทัลและ AI ที่ช่วยลดต้นทุนและเวลาในการทำงานขององค์กร</p>
 <div class="kpis" id="kpis"></div>
+</div>
+<div class="hero-art"><img class="brain" src="assets/brain.png" alt=""><img class="logo" src="assets/logo.png" alt="โลโก้ DigiNex AI"></div>
 </header>
 
-<section><div class="story"><h2>1. ใครคือลูกค้าของเรา</h2><p id="t1"></p><small>ที่มา: Customer Segments ใน BMC</small></div>
+<section><div class="story"><h2><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="17" cy="9" r="2.5"/><path d="M17.5 14c2.5.3 4 2 4 4.5"/></svg></span><span>1. ใครคือลูกค้าของเรา</span></h2><p id="t1"></p><small>ที่มา: Customer Segments ใน BMC</small></div>
 <div class="chart" id="c1"></div></section>
 
-<section><div class="story"><h2>2. รายรับมาจากไหน</h2><p id="t2"></p><small>ที่มา: Revenue Streams ใน BMC (ล้านบาท)</small></div>
+<section><div class="story"><h2><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M14.5 9.5c0-1.2-1-2-2.5-2s-2.5.8-2.5 2 1 1.8 2.5 2 2.5.8 2.5 2-1 2-2.5 2-2.5-.8-2.5-2M12 6v1.5M12 16.5V18"/></svg></span><span>2. รายรับมาจากไหน</span></h2><p id="t2"></p><small>ที่มา: Revenue Streams ใน BMC (ล้านบาท)</small></div>
 <div class="chart"><div class="leg" id="l2"></div><div id="c2"></div></div></section>
 
-<section><div class="story"><h2>3. เงินไปอยู่ที่ไหน</h2><p id="t3"></p><small>ที่มา: Cost Structure และ 4M (Man, Money, Material, Management)</small></div>
+<section><div class="story"><h2><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v9h9"/></svg></span><span>3. เงินไปอยู่ที่ไหน</span></h2><p id="t3"></p><small>ที่มา: Cost Structure และ 4M (Man, Money, Material, Management)</small></div>
 <div class="chart" id="c3"></div></section>
 
-<section><div class="story"><h2>4. กำไรเกิดเมื่อไร</h2><p id="t4"></p><small>รายรับเทียบรายจ่ายรายไตรมาส (ล้านบาท)</small></div>
+<section><div class="story"><h2><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/></svg></span><span>4. กำไรเกิดเมื่อไร</span></h2><p id="t4"></p><small>รายรับเทียบรายจ่ายรายไตรมาส (ล้านบาท)</small></div>
 <div class="chart"><div class="leg"><span><i style="background:var(--cyan)"></i>รายรับ</span><span><i style="background:var(--warn)"></i>รายจ่าย</span></div><div id="c4"></div></div></section>
 
-<section><div class="story"><h2>5. ช่องทางไหนปิดการขายได้ดี</h2><p id="t5"></p><small>ที่มา: Channels และ 4P (Place, Promotion)</small></div>
+<section><div class="story"><h2><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 8v7l-4 2v-9z"/></svg></span><span>5. ช่องทางไหนปิดการขายได้ดี</span></h2><p id="t5"></p><small>ที่มา: Channels และ 4P (Place, Promotion)</small></div>
 <div class="chart" id="c5"></div></section>
 
-<section><div class="story"><h2>6. สิ่งที่ต้องทำต่อ</h2><div id="t6"></div></div>
+<section><div class="story"><h2><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3 2 5 5 5 9l-2 3H9l-2-3c0-4 2-7 5-9z"/><circle cx="12" cy="10" r="1.5"/><path d="M9 18l-1 3M15 18l1 3"/></svg></span><span>6. สิ่งที่ต้องทำต่อ</span></h2><div id="t6"></div></div>
 <div class="chart"><div id="swot"></div></div></section>
 
-<footer>กลุ่มอุตสาหกรรมดิจิทัล | 67160376 สิรภพ ณ ระนอง | วิชา Business Idea Creation<br>ข้อมูลเป็นข้อมูลจำลองเพื่อการเรียนรู้ (ดูไฟล์ใน data/)</footer>
+<footer><img src="assets/logo.png" alt="DigiNex AI"><div>กลุ่มอุตสาหกรรมดิจิทัล | 67160376 สิรภพ ณ ระนอง | วิชา Business Idea Creation<br>ข้อมูลเป็นข้อมูลจำลองเพื่อการเรียนรู้ (ดูไฟล์ใน data/)</div></footer>
 
 <script>
 // ข้อมูลตรงกับไฟล์ใน data/*.csv
